@@ -1,0 +1,21 @@
+# torch / torchaudio are installed separately (CUDA wheel index), see README.md
+numpy<2
+scipy<1.13          # parallel_wavegan 0.6.1 imports scipy.signal.kaiser
+librosa==0.10.2.post1
+soundfile
+pyworld
+g2p_en==2.1.0
+nltk
+inflect
+unidecode
+pyyaml
+transformers==4.44.2
+huggingface_hub
+wandb
+matplotlib
+scikit-learn
+tqdm
+h5py
+filelock
+gdown
+jiwer

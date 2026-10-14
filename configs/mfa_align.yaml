@@ -1,0 +1,3 @@
+# MFA 3.x alignment overrides (wider beams so long LJSpeech utterances do not fail)
+beam: 100
+retry_beam: 400

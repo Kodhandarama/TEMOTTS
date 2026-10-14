@@ -1,0 +1,80 @@
+# TEMOTTS Stage I: FastSpeech2 (ESPnet2 LJSpeech recipe hyper-parameters) + GST (16 tokens)
+# + speaker lookup table (LJSpeech / emotional speaker). Trained on LJSpeech + emotional TTS data.
+model:
+  odim: 80
+  adim: 384
+  aheads: 2
+  elayers: 4
+  eunits: 1536
+  dlayers: 4
+  dunits: 1536
+  positionwise_conv_kernel_size: 3
+  duration_predictor_layers: 2
+  duration_predictor_chans: 256
+  duration_predictor_kernel_size: 3
+  postnet_layers: 5
+  postnet_filts: 5
+  postnet_chans: 256
+  use_masking: true
+  use_scaled_pos_enc: true
+  encoder_normalize_before: true
+  decoder_normalize_before: true
+  init_type: xavier_uniform
+  init_enc_alpha: 1.0
+  init_dec_alpha: 1.0
+  transformer_enc_dropout_rate: 0.2
+  transformer_enc_positional_dropout_rate: 0.2
+  transformer_enc_attn_dropout_rate: 0.2
+  transformer_dec_dropout_rate: 0.2
+  transformer_dec_positional_dropout_rate: 0.2
+  transformer_dec_attn_dropout_rate: 0.2
+  pitch_predictor_layers: 5
+  pitch_predictor_chans: 256
+  pitch_predictor_kernel_size: 5
+  pitch_predictor_dropout: 0.5
+  pitch_embed_kernel_size: 1
+  pitch_embed_dropout: 0.0
+  stop_gradient_from_pitch_predictor: true
+  energy_predictor_layers: 2
+  energy_predictor_chans: 256
+  energy_predictor_kernel_size: 3
+  energy_predictor_dropout: 0.5
+  energy_embed_kernel_size: 1
+  energy_embed_dropout: 0.0
+  stop_gradient_from_energy_predictor: false
+  # speaker lookup table: 0 = LJSpeech, 1 = emotional speaker
+  spks: 2
+  # GST (paper: N_tokens = 16; see IMPLEMENTATION.md for the heads choice)
+  use_gst: true
+  gst_tokens: 16
+  gst_heads: 1
+  gst_conv_layers: 6
+  gst_conv_chans_list: [32, 32, 64, 64, 128, 128]
+  gst_conv_kernel_size: 3
+  gst_conv_stride: 2
+  gst_gru_layers: 1
+  gst_gru_units: 128
+
+data:
+  max_frames: 1600          # drop utterances longer than ~18.6 s
+  batch_max_frames: 20000   # dynamic batch: batch_size x longest utterance <= this
+  max_batch_size: 64
+  num_workers: 6
+
+optim:
+  peak_lr: 1.0e-3     # "10e-4"
+  betas: [0.9, 0.999]
+  eps: 1.0e-8         # "10e-9"
+  warmup_steps: 4000
+  grad_clip: 1.0      # ESPnet default
+
+train:
+  max_steps: 300000
+  log_interval: 50
+  val_interval: 2000
+  sample_interval: 10000   # vocoded audio samples to W&B
+  save_interval: 2000
+  keep_every: 50000
+  seed: 777
+  amp: false
+  n_samples_per_group: 1   # val samples per (LJSpeech | each emotion folder)
