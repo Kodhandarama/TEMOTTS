@@ -14,6 +14,11 @@ at inference:
   model (DistilRoBERTa) to the GST weights of its recording.
 - **Inference:** text → language model → MLP → GST weights → FastSpeech2 → Parallel WaveGAN.
 
+![TEMOTTS framework](figures/temotts_framework.jpg)
+
+*The TEMOTTS framework. Red modules are trainable, purple modules are fixed; CE loss is
+categorical cross-entropy.*
+
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for how each part of the paper maps to the code
 and for the details the paper leaves open.
 
