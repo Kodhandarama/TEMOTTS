@@ -22,6 +22,49 @@ categorical cross-entropy.*
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for how each part of the paper maps to the code
 and for the details the paper leaves open.
 
+## Quick start: pretrained model on CPU
+
+The trained model is packaged as [`temotts`](https://pypi.org/project/temotts/) and runs on
+CPU. You don't need a GPU, a dataset or any training:
+
+```bash
+pip install temotts
+```
+
+```python
+from temotts import TEMOTTS
+
+tts = TEMOTTS()
+tts.save("I am so sad these days.", "sad.wav")
+```
+
+The emotion is predicted from the text itself. `synthesize` returns the audio and what the
+model used:
+
+```python
+out = tts.synthesize("We won the championship, this is the best day of my life!")
+out.save("happy.wav")
+out.emotion        # emotion LM probabilities, e.g. joy 0.98
+out.gst_weights    # the 16 style-token weights the speech was conditioned on
+wav = out.wav      # float32 numpy array, 22050 Hz
+
+# say one sentence in the style of another, change the voice or the speaking rate
+tts.save("The meeting is at three.", "scared.wav", style_text="I am terrified.")
+tts.save("This is the LJSpeech voice.", "lj.wav", speaker="ljspeech", speed=1.1)
+```
+
+Or from the command line:
+
+```bash
+temotts "Stop lying to me, I am sick and tired of your excuses!" -o angry.wav
+```
+
+The first call downloads the emotion language model (about 330 MB) from the Hugging Face
+Hub. On Linux, run `pip install torch --index-url https://download.pytorch.org/whl/cpu`
+first to skip the large CUDA build of PyTorch.
+
+The rest of this README covers training TEMOTTS from scratch.
+
 ## Setup
 
 Linux with a CUDA GPU, Python 3.10.
